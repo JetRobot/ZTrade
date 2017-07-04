@@ -1,0 +1,17 @@
+class volsurface:
+
+Giving a matrix of call and put prices for a range of maturities and strikes and a yield curve allows us to invert the Black-Scholes formula for each price to get the implied volatility.
+In plotting the matrix of implied volatilites we create an implied volatility surface.
+
+According to Black-Scholes option pricing model, the volatility for calls and puts for the same maturity should have the same volatility and the implied volatility surface should be a term structure.
+However market prices indicate that volatilities depend on strikes level.
+The implied volatility surface of market prices looks like a smile.
+
+Once this surface constructed we can get the implied volatity (or variance) for a given strike and a given maturity using a quadratic interpolation.
+As the surface is rather smooth and looks like a parabol, a quadratic interpolation gives us good approximation.
+
+We can also compute the forward variance with this formula :
+
+                              Sigma_T2 * Sigma_T2 * T2  -  Sigma_T1 * Sigma_T1 * T1
+Sigma_T1,T2 * Sigma_T1,T2 =   _____________________________________________________
+                                                    T2  -  T1

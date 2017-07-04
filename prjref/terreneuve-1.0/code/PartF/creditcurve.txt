@@ -1,0 +1,127 @@
+todo:
+- probability methods should work with Date as well
+- add versions of new 'shift' functions in yieldCurve
+- riskyDiscountFactor, hazardRate
+
+Report template
+
+Part F: Credit Curve
+Developer: Aloke Mukherjee
+Validator: Yann Renoux
+
+Requirements
+------------
+A credit curve is similar to a yield curve in that it can be used to calculate discount factors and thus present or future values of a risky security.  The key difference is that there is a spread at each maturity between the credit curve and the yield curve corresponding to the additional return required for taking on the added risk.  
+
+Credit curves are associated with the issuer's creditworthiness.  There is always a probability that the issuer will default and thus be unable to meet their debt obligations.  A survival probability quantifies the probability at any given time that the issuer will "survive" to meet these obligations.  Survival probability declines with time and declines faster for less credit-worthy issuers.  
+
+We calculate implied probabilities from credit default swap spreads.  In a credit swap the buyer of protection pays the spread periodically and the seller pays in the event of a default.  These two legs must have equal present values.  The assumption underlying this model is that the spread on a risky asset vs. a non-risky asset is entirely compensation for the possibility of default.  
+
+The CreditCurve class models the modified yield curve as well as the issuer's survival probability, hazard rate and recovery rate.
+
+Design
+------
+
+* Approach
+
+All of the discounting functionality can be reused from the YieldCurve object.  The CreditCurve object must also maintain a collection of spread points.  
+
+Survival probabilities are modelled as discrete values and hazard rates calculated from these using a discrete conditional probability.  
+
+A hazard rate is an instantaneous probability that an issuer will default given that they have survived up to a given time.  In the continuous limit the hazard rate and the survival probability are related by the relationship:
+
+s(t) = exp( - integral(0->t)(h(u)du) )
+
+h(t) = - s'(t) / s(t)
+
+where h(t) is the hazard rate and s(t) is the survival probablity
+
+More definitions:
+qn - default probability or default intensity
+ probability of default in period n conditional on no previous default
+
+Qn - default probability density
+ unconditional probability of default in period n - it is related to q by
+ Qn = PI:i=1->n-1(1 - qi) * qn
+
+Sn - survival probability 
+ probability of survival till time n 
+ it is related to q by Sn = PI:i=1->n(1 - qi)
+ it is related to Q by Sn = 1 - SUM:i=1->n(Qi)
+
+Fn - fees 
+ the value of either leg (since they are equal) at time n 
+
+* Choices
+
+Relation to YieldCurve -
+There are three choices here as I see it - 
+. CreditCurve can inherit from YieldCurve
+. YieldCurve and CreditCurve could both inherit from some common class 
+. CreditCurve could contain a YieldCurve
+
+The first two have the benefit of allowing polymorphism - e.g. a function designed to take a YieldCurve object and use it for discounting can also take a CreditCurve object.  
+
+This would not be possible in the third case unless there were some method of CreditCurve which returned a YieldCurve.  This is cumbersome.  
+
+Of the two polymorphic approaches the first has the benefit of simplicity and intuitiveness: namely there is no object more basic than a YieldCurve in finance and secondly the CreditCurve is a type of YieldCurve rather than a type of some other more basic object.  Our implementation takes the first approach.
+
+The survival probabilities/hazard rate are modelled discretely due to ease of implementation and the ability to get survival probabilities for different grades of debt from online sources.  Certainly it would not be hard to adapt this class to implement continuous functions for hazard rate/survival probability.  One challenge might be numerically integrating the hazard rate to produce survival probabilities.
+
+Also:
+Throw out .5 year spread.  Why?  Keeping it requires having a special case.  Instead we standardize the calculation on 1 year intervals - i.e. assume default happens at 1/2 year mark.  Additionally, looking at the data for AIG it looks like the .5 year spread is interpolated (equal to 1 year spread).  
+
+Interpolate spreads at 1 year granularity.  Why?  Hull suggests one approach for calculating default probabilities on an interval where there is no spread data: assume a constant unconditional default probability in each period.  Since the calculations implemented here work with conditional default probabilities it is easier to assume a spread and leave the calculation as it is.  From the rough relationship h = s/(1-R) we know that spreads are roughly proportional to conditional default probabilities so this is like assuming a constant default probability in the interval.  The approach of using a constant default intensity is suggested in section 21.3 of OFOD.  For another supporting argument for this approach see http://www.fincad.com/newsletter.asp?i=1140&a=1800 which suggests interpolating CDS spreads as an improvement vs. constant "default density" (a.k.a. unconditional default probabilities).
+
+
+* Implementation
+
+As discussed above, the CreditCurve is inherited from YieldCurve to allow it to work with functions expecting a YieldCurve.  We override the discount factor method to take into account the credit spread (discountFactor must be declared virtual in YieldCurve).  Linear interpolation is used to calculate credit spread values for intermediate times.
+
+Spread points are similar to yield points so the same collection class valarray is used to contain them.  
+
+Survival probabilities are specified using discrete unconditional survival probabilities at a set of given times.  Again this is managed using a valarray of survival points.
+
+Hazard rates are calculated from survival probabilities using the discrete formula.  Linear interpolation is used to provide hazard rates for intermediate times.
+
+* Methods
+
+Brief descriptions of each method (can take from Doxygen documentation)
+
+Validation
+----------
+
+* Unit tests
+
+(if we write these as separate functions we can use doxygen to generate this)
+
+* Validation
+
+(i.e. what alternate method was used to validate the results - if this required a lot of code then similar outline as above should apply)
+
+* Pitfalls
+
+Linear vs. Bootstrapping interpolation
+
+The credit curve is created by adding the yield curve's spotrates with the credit spread / interpolated credit spread values.  One pitfall has to do with what maturities to use when creating the credit curve.  
+
+When yield curve rates are specified as swap rates, cash rates are interpolated for all intervening years as part of the bootstrapping process.  If we are creating a credit curve using spot rates from this yield curve then omitting these interpolated rates will result in a mismatch between the curves.  This is because the intervening values will be interpolated linearly rather than through the bootstrap process.
+
+This issue was caught by testing whether a credit curve with zero spreads produced the same spotrates, discount factors, etc. as the underlying yield curve.
+
+For more details see:
+https://sourceforge.net/mailarchive/forum.php?thread_id=9014593&forum_id=46760
+
+
+q - conditional
+Q - unconditional
+Q1 = q1
+Q2 = (1 - q1)q2
+
+
+B(0,t1)S1(1-q1) = B(0,t1)(1-R)q1
+
+B(0,t1)S2(1-q1) + B(0,t1)S2(1-q1)(1-q2) = 
+B(0,t1)(1-R)q1 + B(0,t1)(1-R)(1-q1)q2
+
+h = s/(1-R)

@@ -1,0 +1,94 @@
+Report template
+
+Part A: Black-Scholes and Monte Carlo pricer
+Developer: Simon Leger
+Validator: Aloke
+
+Requirements
+------------
+
+In this section, we write a model to price european options using the Black-Schoels formula and return the greeks associated to these options. We also write a monte carlo pricer to be able to check the prices for these options.
+
+The formula for European options is depending on the type of the options (i.e. Call or Put) is : ******* TODO************ and the greeks are ****** TODO************
+
+We then extend the previous model to provide the same results for the following strategies :
+	- Long Call Spread
+	- Long Straddle
+	- Long Butterfly Spread
+
+Design
+------
+
+* Approach
+
+To construct this, I see two important parts :
+	- One pricer using formula
+	- A generic pricer using Monte Carlo approach
+
+One class (named Black-Scholes) computes the prices, implied vol and greek letters for a given type of option (type is either Call or Put) and all this should be easily used through a nice OptionStrategy class which is basically a portfolio of options. In this class you have the possibility to add options by giving their parameters or use friendly methods that construct for you some famous combinations, as has been asked in the subject. 
+
+Then we build a multiple-class based monte Carlo pricer which is driven by the MCEngine class. This pricer should be general enough to price various derivatives products as it generates a path for given dates, by taking into account the yield curve and the solatility surface built in this project, hence the possibility to price asian, look back options...
+
+* Choices
+
+-I did not choose to use polymorphism for the black-scholes and option strategy parts as both could be considered independent and use separately.
+
+-For the Monte Carlo pricer I used polymorphism in order the user to be able to use different random number generators and still have a robust interface Random class. The default number generator is ParkMiller which is better than the default number generator of c++ and provide enough numbers to be generated if required.
+
+In addition, the user has a drift class than can be modified easily to adopt other path generators. This one uses the extended Black-Scholes model by taking into account the yield curve and the volatility surface so they are not considered constant through the path, which is useful for path dependent options.
+
+There is then a GaussianProcess class which takes the lognormal process by adding the drift and the random numbers generated and apply the corresponding volatility.
+
+The Payoff class provides methods to take the path generated and the strike and returns the payoff according to the option specified.
+
+* Implementation
+
+There are three different kind of number generators : the c++ default generator, the Park Miller generator, the Mersenne Twister generator but also Sobol which is a quasi random generator. Here is a comparison of precision for the different number generators : we try to price a european call, exact price is 4.94387 :
+
+For 300k simulations :
+	Generator		Price	Time
+	*RandC			4.960	2.156
+	*Park Miller		4.987	1.968
+	*Mersenne Twister	4.936	1.984
+	*Sobol			4.94354	1.950
+
+For 1M simulations :
+	Generator		Price	Time
+	*RandC			4.935	7.172
+	*Park Miller		4.962	6.532
+	*Mersenne Twister	4.949	6.547
+	*Sobol			4.94372	6.420
+
+For 10M simulations :
+	Generator		Price	Time
+	*RandC			4.9432	70.98
+	*Park Miller		4.9448	67.70
+	*Mersenne Twister	4.9461	65.08
+	*Sobol			4.94385	64.26
+
+For 50M simulations :
+	Generator		Price	Time
+	*RandC			4.9461	355.62
+	*Park Miller		4.9446	324.09
+	*Mersenne Twister	4.9435	325.73
+	*Sobol			4.94387	319.95
+
+
+* Methods
+
+********* TODO **************** take from Doxygen
+
+Validation
+----------
+
+* Unit tests
+
+(if we write these as separate functions we can use doxygen to generate this)
+
+* Validation
+
+(i.e. what alternate method was used to validate the results - if this required a lot of code then similar outline as above should apply)
+
+* Pitfalls
+
+(i.e. what bugs were found)

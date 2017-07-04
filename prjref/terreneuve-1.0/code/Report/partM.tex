@@ -1,0 +1,70 @@
+\chapter{Part M: Portfolio}
+Developer: All
+
+\noindent Validator: All
+
+
+%DEVELOPER WRITES THIS PART --->
+
+\section{Requirements}
+
+%<description of the problem being solved, relevant equations, algorithms, etc>
+In this section we design and write a framework that represents the characteristics and behavior
+ of portfolios and their values and risk under different types of market scenarios. Each portfolio 
+has a name and a currency. All relevant financial information about the portfolio such as its value, 
+profit/loss, and risk is expressed in the portfolio currency. The portfolio will contain a number of securities 
+whose positions, profit loss and risk the objects will manage. For each security in the portfolio our framework will 
+provide the security name, cost basis, current price, price currency amount, current value, profit loss.
+Each security will have a risk profile called its risk map. The risk map describes the variation in the value of the 
+security for changes/shifts in risk factors. The framework will allow scenario analysis for the portfolio. We should implement methods for the following :
+\begin{itemize}
+	\item Current value of the security
+	\item Profit loss for the security
+	\item Profit loss for the portfolio
+	\item Current value of the portfolio
+	\item Import portfolio information from a file
+	\item Import list of securities from a file
+	\item Import risk map of a security from a file
+	\item Import scenario list from a file
+	\item Value of the portfolio for a single risk factor risk scenario
+	\item Profit/Loss report
+	\item Portfolio analysis report
+	\item Value at risk for the portfolio
+\end{itemize}
+
+\section{Choices }
+
+As mentionned by Pr Laud in the last week, we did not try to do the VaR. Though the framework of the project would have easily permitted it, we have chosen to focus on validating correctly all the delivered structures rather than delivering more but not being sure of the reliability of the products.
+
+The design enables the structure to be able to handle the requirements as if bears all the information on all the products we developped in this project.
+
+\section{Approach}
+%<high-level description of the design>
+The portoflio class in the C++ project just takes a name and a currency and provides the user of the program with methods to add 
+each type of security we have, namely :
+\begin{itemize}
+	\item OptionStrategy, which is already a portfolio of BlackScholes object
+	\item Rainbow options
+	\item Exotic options
+	\item Vanilla swap
+	\item Variance swap
+	\item Bond
+	\item Asset
+\end{itemize}
+
+There is also a method to compute the value of the portfolio and to get the absolute risk for different sorts of scenarios, similar to the greeks for the options.
+
+\section{Choices}
+%<any important design choices you made, e.g. data structures, class hierarchy, algorithm, etc. and a justification for the decision>
+Each security is stored in the portfolio in valarrays of pointers to these objects, since we dont want to make a copy of already existing objects. For each security we also have a quantity, in order to avoid to copy them many times in the portfolio.
+\par We also provide similar methods to greek values for the portfolio, giving a risk value for different kinds 
+of risks, which are calculated by calling these methods from the security class, if this one exists. For example there is no sensibility 
+to volatility for a bond or a vanilla IR swap, but each security has a sensibility to the interest rate or to time.
+
+
+
+%VALIDATOR WRITES THIS PART --->
+
+\section{Validation}
+
+All structures were validated in the other sections, and tested. This one just goes through all the valarrays of the products to add them (deleting is adding the opposite quantity) and return the value of the portfolio, and its greeks with which we could output the stress loss or PnL report based on the moves of any market parameter.

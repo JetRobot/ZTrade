@@ -1,0 +1,162 @@
+
+\documentclass[report,11pt,titlepage]{report}
+\usepackage{amsmath,amssymb,graphicx,url}
+\newcommand{\ud}{\mathrm{d}}
+\newenvironment{vcenterpage}
+{\newpage\vspace*{\fill}}
+{\vspace*{\fill}\par\pagebreak}
+
+
+%---------------------------------------------------------------------
+\newtheorem{Def}{\textbf{Definition}}%[part]
+\newtheorem{The}{\textbf{Theoreme}}%[part]
+\newtheorem{Prop}{\textbf{Property}}%[part]
+\newtheorem{Lem}{\textbf{Lemma}}%[part]
+\newtheorem{Asp}{\textsl{\textbf{Assumption}}}%[part]
+\newtheorem{Ass}{\textsl{\textbf{Assumption}}}%[part]
+\newtheorem{Hyp}{\textsl{\textbf{Hypotheses}}}%[part]
+\newtheorem{Rem}{\textsl{\textbf{Remark}}}%[part]
+\newtheorem{Rec}{\textsl{\textbf{Recall}}}%[part]
+\newtheorem{Res}{\textsl{\textbf{Result}}}%[part]
+
+%---------------------------------------------------------------------
+% short cuts
+\newcommand{\indic}{\textsc{1\hspace{-0.24cm} I}}
+\newcommand{\pr}{\mathbb{P}}
+\newcommand{\qr}{\mathbb{Q}}
+\newcommand{\esp}{\mathbb{E}}
+\newcommand{\var}{\mathbb{V}}
+\newcommand{\ie}{\emph{i.e.} }
+\newcommand{\cf}{\emph{c.f.} }
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\be}{\begin{equation}}
+\newcommand{\en}{\end{equation}}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\bes}{\begin{eqnarray*}}
+\newcommand{\ens}{\end{eqnarray*}}
+\newcommand{\beqa}{\begin{eqnarray*}}
+\newcommand{\eeqa}{\end{eqnarray*}}
+
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+
+% short cuts
+\renewcommand{\a}{\alpha}
+\renewcommand{\b}{\beta}
+\renewcommand{\d}{\delta}
+\newcommand{\D}{\Delta}
+\newcommand{\g}{\gamma}
+\newcommand{\G}{\Gamma}
+\renewcommand{\k}{\kappa}
+\renewcommand{\l}{\lambda}
+\renewcommand{\L}{\Lambda}
+\newcommand{\m}{\mu}
+\newcommand{\n}{\nu}
+\newcommand{\p}{\pi}
+\renewcommand{\r}{\rho}
+\newcommand{\s}{\sigma}
+\renewcommand{\S}{\Sigma}
+\renewcommand{\sb}{\bar{\sigma}}
+\renewcommand{\t}{\tau}
+\renewcommand{\O}{\Omega}
+
+\newcommand{\hS}{\hat{S}}
+\newcommand{\tm}{\tilde{\mu}}
+\newcommand{\tS}{\tilde{S}}
+\newcommand{\tP}{\tilde{P}}
+\newcommand{\tx}{\tilde{x}}
+\newcommand{\ty}{\tilde{y}}
+\newcommand{\tz}{\tilde{z}}
+\newcommand{\tV}{\tilde{V}}
+\newcommand{\ts}{\tilde{\sigma}}
+
+\newcommand{\cF}{{\cal F}}
+\newcommand{\cL}{{\cal L}}
+\newcommand{\cP}{{\cal P}}
+
+\newcommand{\pd}{\partial}
+\newcommand{\half}{\frac{1}{2}}
+
+
+\topmargin -2cm \textheight 24cm \textwidth 17cm \oddsidemargin -0.5cm
+
+
+\def\endproof{\hfill\vbox{\hsize=6pt{\hrule
+\hbox{\vrule height 6pt depth 0mm\vrule height .4pt depth 0pt
+width 6pt\vrule height 6pt depth 0mm}} }}
+
+
+%-----------------------------------------------------------------------
+% avec Hoogland
+%\usepackage{epsfig}
+
+%----------------------------------------------------------------
+
+\title{
+{\Huge Computing in Finance -- C++ Project}
+\\
+\bigskip
+}
+\author{
+\huge Terreneuve-devel Project\\
+\bigskip
+\\
+Simon LEGER\\
+Aloke MUKHERJEE\\
+Joseph PEREZ\\
+Yann RENOUX
+}
+\date{\today}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\small
+Welcome to Terreneuve.
+
+What is Terreneuve? Simply: "A lightweight C++ library for quantitative finance applications".
+
+In more detail, Terreneuve is our team name for the project in the Fall 2005 Computing in Finance course at NYU's Courant Institute Masters in Math Finance. Working from this specification we hope to design a useable C++ library for some important quantitative finance applications.
+
+Our target audience (aside from our prof ;-)) is students in quantitative finance and those seeking a gentle introduction to financial computing. Obviously, we also intend to use the project as a learning opportunity. We refer those looking for a more comprehensive (and complex) library to the quantlib project.
+
+Also...why Terreneuve? Well, we're three Frenchmen and one Canadian, so we picked something a little French and a little Canadian. Terreneuve is French for "Newfoundland", one of Canada's provinces, as well as signifying the new world we're exploring with this project.
+
+- the Terreneuve team
+\footnote{	We would like to thank our parents, our grand parents, and ... wait a minute, are we supposed to make this a serious page ? \\ Many thanks to the nerds that invented the Internet, we used it a lot. We are also thankful to sourceforge.net for the user-friendly interface to share code and use it with CVS, it helped a lot.
+\\ Last, but not least we would like to thank Kishor Laud for all the answers he provided during the development of this project, and all our classmates for asking so many questions that Kishor often answered the ones we would ask ourselves even before we thought about them.}
+
+
+
+\end{abstract}
+
+
+
+\newpage          % Faire un titre
+\tableofcontents
+\newpage
+%\listoffigures       % Table des figures
+
+\input{intro.tex}
+
+\input{menu.tex}
+
+\input{common.tex}
+
+\input{partA.tex}
+\input{partB.tex}
+\input{partC.tex}
+\input{partE.tex}
+\input{partF.tex}
+\input{partD.tex}
+\input{partH.tex}
+\input{partI.tex}
+\input{partJ.tex}
+\input{partK.tex}
+\input{partL.tex}
+\input{partM.tex}
+\input{concl.tex}
+%call each file PartX.tex and then add here \input{PartX.tex}
+
+
+\end{document}

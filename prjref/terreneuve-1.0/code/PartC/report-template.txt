@@ -1,0 +1,40 @@
+Part C: Asset
+Developer: Yann
+Validator: Jospeh
+
+
+
+
+Requirements
+------------
+underlying asset class - could bear all the info on yc, vol sf, etc, so we only pass assets in parameters in the derivatives - not the choice we made so very basic and unused class - except for getting long a stock
+
+Design 
+------
+
+* Approach
+no big deal
+
+* Choices
+
+
+* Methods
+
+a virtual getPrice so that of later we want to inherit we can do it
+
+* Unit tests
+div
+
+* Performance
+
+
+Validation
+----------
+
+* Approach
+
+<i.e. what alternate method was used to validate the results - if this required a lot of code then similar outline as above should apply>
+
+* Pitfalls
+
+<i.e. what bugs were found>

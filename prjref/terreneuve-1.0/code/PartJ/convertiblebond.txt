@@ -1,0 +1,44 @@
+follow the method of MCEngine -
+
+pass variables required to evaluate a node in ctor
+BinomialTree::BinomialTree(
+ payoff,
+ bond price,
+ conversion value,
+ call price,
+ put price)
+
+add a method to evaluate a given claim process
+BinomialTree::RunEngineConvertibleBond
+ calls payoff(stock price, bond price, conversion, call, put) and fills in
+ the claim process and discounts back through tree
+
+create a new payoff function that evaluates
+Value = max (Conversion value, min (Bond Value, Call Price), Put Price)
+given above info (but note - if on last step can only be max(conversion, bondvalue) - need to have two payoffs functions?
+
+in the convertiblebond class
+- contain all the class variables
+ conversion ratio
+ arguments to instantiate binomial tree: So, T, r, n, sigma
+ (contain So and sigma in an asset subclass?)
+ put price (put dates?) - set to 0 if no put
+ call price (call dates?) - set to infinity if no call
+- instantiate a "payoff"
+- instantiate the binomial tree (pass payoff)
+- run the engine and cache the result
+
+
+CB
+bond
+ faceamount
+ maturity
+ daycount
+ yc (e.g. r) 
+ cc
+stock (So, sigma)
+ n 
+convertible
+ conversionratio
+ callprice
+ putprice

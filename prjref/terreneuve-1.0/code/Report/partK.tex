@@ -1,0 +1,70 @@
+\chapter{Part K: Variance Swaps}
+Developer: Simon Leger
+
+\noindent Validator: Aloke Mukherjee
+
+
+%DEVELOPER WRITES THIS PART --->
+
+\section{Requirements}
+
+%<description of the problem being solved, relevant equations, algorithms, etc>
+In this section, we use a portfolio of European options to compute
+the value of a variance swap. We write methods to compute the value of such swaps.
+
+
+\section{Design }
+
+The value of a variance swap is computed according to the theoritical formula. 
+There is in fact a formula to compute the value of a variance swap under 
+no-arbitrage assumption which is not the case for volatility swaps for instance.
+
+\section{Approach}
+%<high-level description of the design>
+To create a variance swap object, we use the OptionStrategy design
+built in part A and we pass a pointer to such an object, with a
+maturity and a forward price since it is all we need to compute
+the value.
+
+
+\section{Choices}
+%<any important design choices you made, e.g. data structures, class hierarchy, algorithm, etc. and a justification for the decision>
+We decided to create all information required in the constructor
+of the object and store them like pointers so we have a function
+getPrice() which calculates the price according to the values
+stored and according to the following formula :
+
+$$Price=\frac{2}{T}\left(\int_0^F\frac{1}{K^2}P(K)dK+\int_F^\infty \frac{1}{K^2}C(K)dK\right)$$
+
+where $T$ is the maturity of the contract, $F$ is the forward price,
+$P(K)$ is the price of the put and $C(K)$ the price of a call with
+strikes $K$.
+
+
+\section{Unit tests}
+
+%<short descriptions of each subtest>
+Test on the VIX index : To test the accuracy of the variance swap implementation 
+we create a portfolio of puts and calls options, by using the OptionStrategy class. 
+We take a minimum and a maximum strike and a step for this and we create a bench of options 
+with these strikes, calls if the strike is higher than the forward value of S\&P and puts in the other case. 
+With a minimum strike of 500, a maximum strike of 3500, a step of 10, we take a spot at 1200, the one month 
+interest rate is around 4.3% and we assume a flat volatility of 33%, we get a price of 10.9, which is very close to 
+the current value of the VIX index which is around 11.
+
+
+
+%VALIDATOR WRITES THIS PART --->
+
+\section{Validation}
+
+
+\subsection{Approach}
+
+%<i.e. what alternate method was used to validate the results - if this required a lot of code then similar outline as above should apply>
+For this section's validation, the more efficient way to test the accuracy of the results provided bt 
+the variance swaps part was to build the formula in an Excel spreadsheet built from prices of options, 
+both calls and puts whose values have been calculated with the Black Scholes closed formula. We then compute 
+the same price as in the example provided in the unit test part and we found the same result.
+As well as for the VIX index, where we have very similar prices to exact value of the index found 
+on the CBOE web site, such that we can consider that the results provided by this class are good.

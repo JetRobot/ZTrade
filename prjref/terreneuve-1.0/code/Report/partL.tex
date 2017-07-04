@@ -1,0 +1,125 @@
+\chapter{Part L: Exotic Products}
+Developer: Simon Leger
+
+\noindent Validator: Yann Renoux
+
+
+%DEVELOPER WRITES THIS PART --->
+
+\section{Requirements}
+
+%<description of the problem being solved, relevant equations, algorithms, etc>
+In this section, we design and write a monte carlo based framework that will allow us to price a variety of exotic products. Our framework has to be able to generate
+simulateed paths for one asset, for every month for five years. Once we have these paths we apply a corresponding payoff formula on the set of paths to get a price for European style products with the following features :
+\begin{itemize}
+	\item Asian options
+	\item Barrier options
+	\item Look back options
+	\item Cliquet
+\end{itemize}
+
+
+\section{Design }
+
+To design this part, we chose to create just one class which is going to use the 
+monte carlo based framework developed in part A. Then we add methods to get the price of the 
+exotic according to a type associated with a given payoff and methods to get the greeks.
+
+\section{Approach}
+%<high-level description of the design>
+
+The Monte-Carlo framework meets all requirements for this part. It is even more general
+since we are able to generate as many intermediate points as we want for given dates.
+As all these products have only one underlying, we are able to use the Sobol generator for them and we get better prices with it.
+
+\section{Choices}
+%<any important design choices you made, e.g. data structures, class hierarchy, algorithm, etc. and a justification for the decision>
+This section is in the "Exotics" class. It takes in the constructor everything it requires to compute the price, they are stored as pointers also 
+to make it faster and it also needs a type, which is the kind of products you need.
+Here are all possibilities :
+
+enum exoticsType {
+\begin{itemize}
+	\item AsianCall,
+	\item AsianPut,
+	\item RevLookbackCall,
+	\item RevLookbackPut,
+	\item FlooredCliquet,
+	\item CappedCliquet,
+	\item CollaredCliquet,
+	\item BarrierCall,
+	\item BarrierPut
+\end{itemize}
+};	
+
+If one wants to add other products, this is very easy since he only needs to add a case in the getPrice() function and write a main montecarlo function for this and applying a new payoff.
+We also provide the greeks by finite difference method. For this one needs to be careful 
+since we have to apply the same random numbers to the paths to get correct greek values, other wise the 
+Monte Carlo approximation error is greater than the difference given by the change on underlying, vol... depending on 
+the greek value. For this we just reset the seed of the generator, which for Sobol is equivalent to recreate orginal 
+vectors for it, which is done by creating a new instance of the generator. This is not a 
+problem in terms of speed since we do not do any computation that is not required.
+
+
+%VALIDATOR WRITES THIS PART --->
+
+\section{Validation}
+
+
+\subsection{Approach}
+
+As these exotic derivatives do not have any closed form solution, our only alternate method to validate the prices is to use an independant Monte Carlo engine and recompute some prices for each option with different sets of parameters. As we had already designed a VBA based Monte Carlo tool, we re-used it to adapt it to the exotic payoffs, this time on a single asset but with path dependancy. Here then the simulated path should be a natural divider of the number of points needed in the payoff. Say for example that we consider a Reverse Look-Back of 2 years, with one added observation date after the first year, we need to simulate the path the end of year 1 AND the end of year 2 to be able to maximize the underlying price on these two dates. The rest follows usual pricing methodology, i.e. making sure we simulate the price with normal independant samples if we have several dates, and recombine the price with the correct drift and volatility for the brownian motion. In practise the drift would be $exp((r-\half\s^2)\frac{T}{nb\_Obs})$ and for the gaussian $exp(\s\sqrt{\frac{T}{nb\_Obs}})$ from one observation date to the other. For the following inputs:
+
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+Spot & 100 \\ 
+\hline
+K & 100 \\ 
+\hline
+$\s$ & $20\%$ \\ 
+\hline
+r & $5\%$ \\ 
+\hline
+T & 1 \\ 
+\hline
+nPaths &  $100,000$  \\ 
+\hline
+\end{tabular}
+\end{center}
+
+We have checked the prices for some of the products -- Monte Carlo simulation in VBA is really slow, so we could not do a broad range as for the rainbows. All available exotics were done except the cliquets. We checked that for a single date, the Asians and Reverse Look Backs lead to the Black Scholes closed form solutions, which is the case. As we increase the number of dates, the maximum on the path should be higher, hence the ReverseLook Back Call should be more expensive with more dates while the put version should be less expensive. For the Asians, the averaging smoothes the extreme values hence for 2 dates and more, the price is lower than the associated Black Scholes European Call/Put. For the one-touch options, the more the dates, the more likely we are to touch the barrier, hence a higher price.
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|l|}
+\cline{2-5}
+\multicolumn{1}{l|}{} & \multicolumn{2}{c|}{\textbf{Terreneuve}} & \multicolumn{2}{c|}{\textbf{Excel}} \\ 
+\hline
+nDates & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{2} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{2} \\ 
+\hline
+RevLookBackCall & \multicolumn{1}{c|}{10.425} & \multicolumn{1}{c|}{12.169} & \multicolumn{1}{c|}{10.425} & \multicolumn{1}{c|}{12.208} \\ 
+\hline
+AsianCall & \multicolumn{1}{c|}{10.425} & \multicolumn{1}{c|}{8.108} & \multicolumn{1}{c|}{10.432} & \multicolumn{1}{c|}{8.115} \\ 
+\hline
+RevLookBackPut & \multicolumn{1}{c|}{5.578} & \multicolumn{1}{c|}{2.855} & \multicolumn{1}{c|}{5.596} & \multicolumn{1}{c|}{2.894} \\ 
+\hline
+AsianPut & \multicolumn{1}{c|}{5.578} & \multicolumn{1}{c|}{4.451} & \multicolumn{1}{c|}{5.544} & \multicolumn{1}{c|}{4.486} \\ 
+\hline
+One Touch Call & \multicolumn{1}{c|}{0.532} & \multicolumn{1}{c|}{0.641} & \multicolumn{1}{c|}{0.533} & \multicolumn{1}{c|}{0.640} \\ 
+\hline
+One Touch Put & \multicolumn{1}{c|}{0.419} & \multicolumn{1}{c|}{0.546} & \multicolumn{1}{c|}{0.418} & \multicolumn{1}{c|}{0.543} \\ 
+\hline
+\multicolumn{1}{l}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} \\ 
+\cline{1-2}
+Black Scholes Call & \multicolumn{1}{c|}{10.451} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} \\ 
+\cline{1-2}
+Black Scholes Put & \multicolumn{1}{c|}{5.574} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{1}{c}{} \\ 
+\cline{1-2}
+\end{tabular}\end{center}
+
+The remarks on the moves of prices with the number of dates are met, as well as Black-Scholes comparison. The prices for only $100,000$ simulations are in line within $1.4\%$ (for the reverse look back put on 2 dates), so we can consider that this object passes the validation test. Result file in data/exotics\_yann.xls
+
+
+\subsection{Pitfalls}
+
+No major pitfall was found. As for the other classes, the on-going validation process enabled to discover some bugs that were fixed, and also for more than one date, do not use Sobol in one dimension.

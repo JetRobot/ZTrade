@@ -1,0 +1,44 @@
+Report template
+
+Part K: Variance Swaps
+Developer: Simon Leger
+Validator: Aloke
+
+Requirements
+------------
+
+In this section, we use a portfolio of European options to compute the value of a variance swap. We write methods to compute the value of such swaps.
+
+Design
+------
+
+* Approach
+
+To create a variance swap object, we use the OptionStrategy design built in part A and we pass a pointer to such an object, with a maturity and a forward price since it is all we need to compute the value.
+
+* Implementation
+
+We decided to create all informations required in the constructor of the object and store them like pointers so we have a function getPrice() which calculates the price according to the values stored and according to the following formula :
+
+P=2/T(integral(0,F)1/K^2P(K)dK+integral(F,infinity)1/K^2C(K)dK)
+
+where T is the maturity of the contract, F is the forward price, P(K) is the price of the put and C(K) the price of a call with strikes K.
+
+* Methods
+
+********* TODO **************** take from Doxygen
+
+Validation
+----------
+
+* Unit tests
+
+(if we write these as separate functions we can use doxygen to generate this)
+
+* Validation
+
+(i.e. what alternate method was used to validate the results - if this required a lot of code then similar outline as above should apply)
+
+* Pitfalls
+
+(i.e. what bugs were found)

@@ -1,0 +1,77 @@
+Part B: Yield Curve
+Developer: Yann
+Validator: Joseph
+
+
+
+
+Requirements
+------------
+This object need to pick up market data in the form of a market yield curve and provide the basic methods expected from a YC.
+For instance, a YC is a set of data points with ascending maturities, related to some F.I. products that provide a yield.
+In practice, the short end of the curve comes from the ZCB's, and the rest is from the swap market. As those 2 evolve in a different space, the class needs to rotate the space of swaps to make them produce ZCB rates corresponding to their proper maturities.
+The relation is given by : Cf matrix in latex
+
+When the object has done this simple transformation, it should then be able to provide the user with DF, FWd and Spot rates, correctly interpolated.
+- FORMULAS
+- continous/annual DF
+
+
+Design 
+------
+
+* Approach
+Prior to studying what a YC is, a simplier object should be defined, the yield point. Its 4 members are :
+- a type (Cash or Swap), 
+- a rate (Real) 
+- a maturity in years, and
+- a Daycount convention. 
+Note that the maturity is not a date, as commonly people talk about the 5Y swap rate of the 1Y ZC rate. The YC will be able to trnasform one into the other.
+
+A YC is now a valarray of YP. include graph
+
+
+* Choices
+As said previously, the YC is a set of YP, which can be either Swap or Cash (ZCB) rates. 
+THe YC can have a name, as in huge projects, people can use different sets of YC, and denote them by currency for instance.
+A flat YC has been done (default constructor).
+Else the user passes a set of YP
+
+
+* Methods
+As we said, the YC is a set of YP that can be from a different space, e.g. Cash and Swap. Hence after sorting the rats by maturity (to be able to bootstrap this is an obvious thing but the user can input non sorted points), we have to classify them by type and perform the transformation.
+Here an assumption has been made. Indeed, the swap quotation can vary a lot depending on the country, the currency, etc. We supposed the swaps quoted had an ANNUL frequency of payment. This is true in the US, and in London, market maket provide both quotes.
+THen as we can see in the matrix, the bootstrap is iterative. THen one may wonder what we should do as quotes usually range from 1Y to 10Y, ten 15Y, 20Y and 30Y. We are obviously missing the 11-14, etc. 
+Another simplification was chosen. The 11 yr rate is the linear interpolation of 10Y and 15Y. This is a lot of a simplification as it will parasite the reconstruction, but the implementation of better methods (such as Splines for example) were not the priority here.
+As we are now set with a list of swap rates from 1Y to 30Y annualy separated, the invertion is easy (provided we use a nice Matrix class * talk about the matrix inversion).
+The class now has all the information needed to compute the necessary methods.
+
+A YC can be shifted or rotated (for risk management purposes)
+
+
+* Unit tests
+Entered the file we had from BBG (quote date and time). Computed the ZC, DF, FWD for some maturities.
+bla bla
+
+
+* Performance
+We have mentionned various assumptions, and their addition would increase the computation time.
+For instance, the flexibility of swaps frequency, or the splines interpolation.
+
+But as is, aside of the valarray that might not be "THE" efficient structure, some methods or storage could be improved.
+For instance, all the getSwapRates - maybe we could store them separately at the construction and avoid needing to find them, etc.
+Also, the getSequentSwapRates, used to the first part of the curve 1Y-10Y, is used only to be able to know whether or not to interpolate. Might be redundant if the list of swaps we get for the matrix invertion was better seen.
+
+
+VALIDATOR WRITES THIS PART --->
+
+Validation
+----------
+
+* Approach
+
+<i.e. what alternate method was used to validate the results - if this required a lot of code then similar outline as above should apply>
+
+* Pitfalls
+
+<i.e. what bugs were found>

@@ -1,0 +1,59 @@
+Part I: Rainbow Options
+Developer: Yann
+Validator: ????
+
+
+
+Requirements
+------------
+see website for formulas + correction
+also, spread and basket options dont have a closed form solution (rubinstein 95)
+
+New products
+
+Graphs, Sobol/ Mersenne,
+
+Per Strike - only closed forms
+
+
+Design 
+------
+
+* Approach
+<high-level description of the design>
+
+* Choices
+More than 2 assets is possible (using cholesky decomposition to recorrelate the samples.
+Supposed non path dependant Rainbom : no need of a YC/VolSf per asset, just a single rate to maturity (no quanto: each of them have same RF rate) and a volToMaturity for each one.
+not considered dividends, but would be an easy amendment (to drift first...)
+
+
+* Methods
+Had to amend to Drift/Gaussian/Random/MCEngine/Payoff to adapt more easily to non path dependant payoffs and avoid passing valarray<valarray>
+
+* Unit tests
+
+.xls
+Sobol
+Pricing Rainbow Options Using Monte Carlo Simulation - 2005
+Wo-Chiang Lee, Shu-Ching Huang - Aletheia University
+
+greeks suck in closed form
+
+* Performance
+
+<how can the performance of this component be sped up by 100%?>
+
+
+VALIDATOR WRITES THIS PART --->
+
+Validation
+----------
+
+* Approach
+
+<i.e. what alternate method was used to validate the results - if this required a lot of code then similar outline as above should apply>
+
+* Pitfalls
+
+<i.e. what bugs were found>

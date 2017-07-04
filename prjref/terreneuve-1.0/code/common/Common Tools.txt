@@ -1,0 +1,21 @@
+Part Common
+Developer: All
+Validator: All
+
+
+Requirements
+------------
+- clean date class to take into account daycount, bus day Convention, leap, etc
+- file Reader/writer - options to easliy output objects to the console
+- interpolation in 1D/2D/3D for all purposes (YC, or vol surface)
+- smart matrix class to be able to do all operations easily, cholesky, swap/zcb calculus..
+
+Design 
+------
+
+Aloke  : all file reading 
+Joseph : interpolators
+Simon  : dates
+Yann   : matrix
+
+All    : several utils, types, etc.

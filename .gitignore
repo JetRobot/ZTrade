@@ -1,32 +1,94 @@
-# Prerequisites
-*.d
+[Dd]ebug*/
+!**/3rd/**/[Dd]ebug*/
+[Rr]elease*/
+!**/3rd/**/[Rr]elease*/
 
-# Compiled Object files
-*.slo
-*.lo
+# Object files
 *.o
 *.obj
+*.ko
+*.elf
 
 # Precompiled Headers
 *.gch
 *.pch
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
+# Libraries
+#*.lib
+#lib
+#*.a
 *.la
-*.a
-*.lib
+*.lai
+*.lo
+*.slo
+
+# Shared objects (inc. Windows DLLs)
+#*.dll
+*.so
+*.so.*
+*.dylib
 
 # Executables
-*.exe
+#*.exe
 *.out
 *.app
+*.i*86
+*.x86_64
+*.hex
+
+# vc
+*.aps
+*.exp
+*.user
+*.ncb
+*.ilk
+*.obj
+*.iobj
+*.pdb
+*.ipdb
+*.suo
+#*.htm
+*.idb
+#*.manifest
+*.res
+*.dep
+*.user
+*.plg
+*.opt
+*.bsc
+*.clw
+*.tmp
+*.sbr
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+
+*.bak
+
+*.psess
+*.vsp
+*.log
+*.err
+*.wrn
+*.i
+*.vspscc
+*.ipch
+*.cache
+*.tlog
+*.lastbuildstate
+*.ilk
+
+ipch
+
+# cmake
+CMakeCache.txt
+CMakeFiles/*
+#Makefile
+#cmake*
+
+# special
+*.pid
+netstackdump*
+
+**/logs/

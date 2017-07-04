@@ -1,0 +1,59 @@
+\chapter{Introduction}
+
+\section{Why, where, when, what for... Terreneuve reason for life}
+
+What is Terreneuve? In more detail, Terreneuve is our team name for the project in the Fall 2005 Computing in Finance course at NYU's Courant Institute Masters in Math Finance. Working from this specification we hope to have designed a useable C++ library for some important quantitative finance applications.
+
+Our target audience (aside from our professor Kishor Laud and our TA Tom Alberts) would be students in quantitative finance and those seeking a gentle introduction to financial computing. Obviously, we also intended to use the project as a learning opportunity. We refer those looking for a more comprehensive (and complex) library to the quantlib project.  Some basic quantlib design patterns have been reused for our common classes.
+
+Also...why Terreneuve? Well, we're three Frenchmen and one Canadian, so we picked something a little French and a little Canadian. Terreneuve is French for "Newfoundland", one of Canada's provinces, as well as signifying the new world we're exploring with this project. See our website on http://terreneuve.sourceforge.net
+
+\section{Design }
+
+The purpose of this project is to design a framework to price a broad range of financial products, with an aim to be able to re-use the built objects if need be later. Hence we have placed an emphasis on making sure the basic building blocks can communicate with each other. We took the first few weeks to focus on building yield curves, assets, volatility surfaces, credit curve and Monte Carlo engine so that all the other classes can rely on this infrastructure.
+
+The code is split into directories corresponding to the required parts of the project, the unit tests for these classes, common tools such as date functions, interpolation and normal distribution approximation, and finally the user interface. This organization makes browsing the code a lot easier for someone new to our project.
+
+\section{Approach}
+
+Team work means evenly dividing the work and making sure communication between objects is smooth. Note that the process of validation was really more an on-going discussion than anything else, hence the reader will not find proper parts written by one or another. The developer wrote his class and provided the validator with a main test program (see the test directory, and in the user menu, choice 4).  The validator then verified that the tests ran and compared with expected results. Each of us followed the development of other components through online discussions and regular meetings.  This allowed us to understand the big picture rather than focusing solely on our assigned tasks.
+Developer/Validator(s) are as follows:
+
+\noindent A: European Options and the Black Scholes Model. (Simon/Aloke)\\
+B: Building a Yield Curve (Yann/Joseph)\\
+C: Building an underlying asset for stocks (Yann/Joseph)\\
+E: Building a Volatility Surface (Joseph/Simon)\\
+F: Building a Credit Curve (Aloke/Yann)\\
+D: Interest Rate Swaps - (Simon/Yann)\\
+H: Treasury Bonds \& Risky Bonds - (Joseph/Aloke)\\
+I: Rainbow Options for 2-assets (and more!): Simulation \& Pricing - (Yann/Simon)\\
+J: Convertible Bonds - (Aloke/Joseph)\\
+K: Variance Swaps - (Simon/Aloke)\\
+L: Exotic Derivatives - (Simon/Yann)\\
+M: Managing Portfolios and Value at Risk - (All/All)\\
+N: Performance Study - combined effort on an on-going basis\\
+Z: User Menu - (Yann/All)\\
+
+\section{Choices}
+
+Though we developed in Microsoft Visual .Net 2003, we wished to have a multiplatform deliverable, so we did not use any MFC and tried to define types (see the common directory) that we would be able to change at the root if the platform does not allow its use. The common types include Real, Natural, Integer, etc.
+
+Another choice we made was to avoid arrays as pointers (double* or double ** for instance) to avoid dealing with memory usage too much. We used the valarray as much as possible.  Although valarray can be slower when working with small arrays, we felt its efficiency with larger sized arrays and the enormous benefit of simplified array management (and reduced debugging time) more than compensated for this drawback.
+
+\section{Project Management}
+
+Sourceforge.net was an indispensable tool for managing the project.  It provided a few important services.  Firstly it provided us with a public webspace to act as a central portal for the project and for storage of project related documentation.  We also used its mailing list feature to co-ordinate discussions among group members and to keep records of meeting minutes and action items.  Most importantly, Sourceforge hosted our Concurrent Versioning System (CVS) repository which we used for source control.  
+
+CVS was a powerful tool for collaboration.  From the portal website anyone verify that all the code was managed using CVS update.  This simplifies code sharing by allowing all developers to receive updates in a timely fashion.  Additionally the CVS repository was configured to notify the terreneuve-cvs mailing list whenever a change was committed by sending a copy of the diffs.  This allowed the whole team to be aware of new updates as well as acting as a code review system.  
+
+Our choice of CVS client was the excellent Tortoise CVS (http://www.tortoisecvs.org/) which integrates seamlessly with Windows Explorer. On receiving news of an update, developers would go to their local repository, update using Tortoise and thus have the latest version available for use in their personal classes.  This process allowed us to stay in sync and make small well-tested changes to the repository in a controlled manner that we were all able to verify immediately.  The resulting code stability enabled us to work rapidly and efficiently.  It also allowed us to keep abreast of development in other components as mentioned earlier.
+
+Another important productivity aid was the definition of a coding standard at the beginning of the project.  This coding standard can be found on the project website and sets down a few rules for naming, structure, etc.  Having the standard improved code readability and enabled other developers to easily understand and use the code of others.  
+
+Related to the coding standard was an agreement on a common commenting format.  This allowed us to use the powerful Doxygen package (http://www.doxygen.org) to automatically generate complete documentation for all the code.  HTML and PDF Documentation was generated nightly on the Sourceforge servers using the latest code.  This documentation is a valuable reference allowing developers or other interested parties to use extensive hyper-linking to quickly navigate and understand the structure of the code.
+
+\section{Interface and Testing}
+
+In addition to the stated project requirements we also undertook the development of a user interface to import data, play with each product independently.as well as building portfolios. We aimed at storing information for later use in the porfolio but did not have time to implement it. Hence the user does not have to go in all the classes and code their own inputs to see how each one works. The framework exists, it is just a matter of defining efficient file formats as we have a file reader.
+
+As mentioned previously, selection 4 of the interface allows users to run the individual unit tests which developers created to verify each class. Unit testing allows code to be verified as development goes on and helps to catch regressions in code quality.  Additionally they serve as a reference for other developers on how to instantiate and use each class.  The unit tests were created in C++ by the section developers, while the validators aimed to verify the results independently using tools such as Matlab or Excel. Validators were both developpers and validators: as validating does not mean debugging obvious discrepancies, coders made sure their results made sense before sending them for validation. All the files that we used for validation are in the repertory data.

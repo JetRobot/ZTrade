@@ -1,0 +1,52 @@
+Report template
+
+Part D: IR Vanilla Swap
+Developer: Simon Leger
+Validator: ??????
+
+Requirements
+------------
+
+In this section, we develop an object that that represents the behavior of a vanilla interest rate swap.
+
+An interest rate swap is a contract where two parties exchange cash derived from the interest on a notional principal. Typically, one side agrees to pay the other a fixed interest rate and receive a floating rate.
+
+We first write an object that represents the characteristics of a cash flow object, which takes a yield curve and a swap leg and computes cash flows to maturity. For this we developed a swap leg object which is just one side of the contract and stored the required information depending on the leg. We then wrote a method to compute the fair value of a swap leg which is the discounted value of its cash flows.
+
+We then extended our object to include amortizing swaps, where the notional declines according to a prescribed schedule.
+
+Design
+------
+
+* Approach
+
+To construct this, I started by the swap leg object which takes some dates and notionals as vectors or can also take a start date, an end date and a frequency and compute the payment dates and also a notional and a constant amortizing value for it and compute the different notionals at each date, according to a certain business day convention.
+
+Then, the CashFlow object takes a swap leg and either a fixed rate or a yield curve to compute the cash flows at each time. We also have a method which takes a yield curve used for discount factors and compute the fair value of the swap.
+
+* Choices
+
+-The choices for this part are very limited as everything is almost described in the project and the liberty is then very reduced. We decided to follow our main objectives in this project, that is the use of valarray and we tried to write the objects as generic as possible to allow them to be modified or complexified easily later.
+
+* Implementation
+
+???????????
+
+* Methods
+
+********* TODO **************** take from Doxygen
+
+Validation
+----------
+
+* Unit tests
+
+(if we write these as separate functions we can use doxygen to generate this)
+
+* Validation
+
+(i.e. what alternate method was used to validate the results - if this required a lot of code then similar outline as above should apply)
+
+* Pitfalls
+
+(i.e. what bugs were found)

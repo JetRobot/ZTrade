@@ -1,0 +1,96 @@
+\chapter{Part D: IR Vanilla Swap}
+Developer: Simon Leger
+
+\noindent Validator: Yann Renoux
+
+
+%DEVELOPER WRITES THIS PART --->
+
+\section{Requirements}
+
+%<description of the problem being solved, relevant equations, algorithms, etc>
+In this section, we develop an object that represents the
+behavior of a vanilla interest rate swap.
+
+An interest rate swap is a contract where two parties exchange
+cash derived from the interest on a notional principal. Typically,
+one side agrees to pay the other a fixed interest rate and receives
+a floating rate.
+
+We first write an object that represents the characteristics of a
+cash flow object, which takes a yield curve and a swap leg and
+computes cash flows to maturity. For this we developed a swap leg
+object which is just one side of the contract and stored the
+required information depending on the leg. We then wrote a method
+to compute the fair value of a swap leg which is the discounted
+value of its cash flows.
+
+We then extended our object to include amortizing swaps, where the
+notional declines according to a prescribed schedule.
+
+
+\section{Design }
+To construct this, we started by the swap leg object which takes
+some dates and notionals as vectors or can also take a start date,
+an end date and a frequency and computes the payment dates and also
+a notional and a constant amortizing value for it and compute the
+different notionals at each date, according to a certain business
+day convention.
+
+Then, the CashFlow object takes a swap leg and either a fixed rate
+or a yield curve to compute the cash flows at each time. We also
+have a method which takes a yield curve used for discount factors
+and computes the fair value of the swap.
+
+
+\section{Approach}
+%<high-level description of the design>
+
+\section{Choices}
+%<any important design choices you made, e.g. data structures, class hierarchy, algorithm, etc. and a justification for the decision>
+The choices for this part are very limited as everything is almost
+described in the project and the liberty is then very reduced. We
+decided to follow our main objectives in this project, that is the
+use of valarray and we tried to write the objects as generic as
+possible to allow them to be modified or complexified easily
+later.
+
+
+\section{Unit tests}
+
+%<short descriptions of each subtest>
+
+The value of a swap paying X\% fixed and receiving a floating rate, with a yieldcurve flat at X\% has been calculated and the price returned was 0.
+
+
+\section{Validation}
+
+
+\subsection{Approach}
+
+Valuating a vanilla swap is actuarial science, so as long as we have the same yield curve as an input, we should be able to match the results exactly. 
+
+We have done the tests in Excel using the default yield curve hence, as the yield curve has been validated, we are sure of the inputs and now have to check the calculation. It has been done for a fixed notional of $1,000,000$ but the class is designed so as to take any set of indexed notionals (has been checked). We have modelled a 5Y annual swap and a 4Y semi annual swap both paying floating versus receiving fixed. The results match exactly except for the floating leg of the semi annual swap, but even after checking that we had the same compounding method for the discount factors and the forward rates (the floating leg is a set of forward rates) and the numbers were excatly in line in C++ versus Excel, we have not been able to detect what the issue was. Note that it is $800$ on a notional of $1,000,000$ though. 
+
+It might be at first approximation the fact that the floating leg computing each and every floating rate for each period, their multiplication populates errors as linear interpolation of the yield curve does not fit properly the yield curve.
+
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+\cline{3-5}\cline{7-9}
+\multicolumn{1}{c}{} & \multicolumn{1}{c|}{} & \multicolumn{3}{c|}{5Y Annual Swap @ $4.71\%$} & \multicolumn{1}{c|}{} & \multicolumn{3}{c|}{4Y Semi-Annual Swap @ $4.641\%$} \\ 
+\cline{3-5}\cline{7-9}
+\multicolumn{1}{c}{} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{TN} & \multicolumn{1}{c|}{Excel} & \multicolumn{1}{c|}{Diff} & \multicolumn{1}{c|}{} & \multicolumn{1}{c|}{TN} & \multicolumn{1}{c|}{Excel} & \multicolumn{1}{c|}{Diff} \\ 
+\cline{1-1}\cline{3-5}\cline{7-9}
+Fixed & \multicolumn{1}{r|}{} & \multicolumn{1}{r|}{ 205,345 } & \multicolumn{1}{r|}{ 205,345 } & \multicolumn{1}{r|}{ -   } & \multicolumn{1}{r|}{} & \multicolumn{1}{r|}{ 167,481 } & \multicolumn{1}{r|}{ 167,481 } & \multicolumn{1}{r|}{ -   } \\ 
+\cline{1-1}\cline{3-5}\cline{7-9}
+Float & \multicolumn{1}{r|}{} & \multicolumn{1}{r|}{ 204,294 } & \multicolumn{1}{r|}{ 204,294 } & \multicolumn{1}{r|}{ -   } & \multicolumn{1}{r|}{} & \multicolumn{1}{r|}{ 167,329 } & \multicolumn{1}{r|}{ 168,129 } & \multicolumn{1}{r|}{ (800)} \\ 
+\cline{1-1}\cline{3-5}\cline{7-9}
+Value & \multicolumn{1}{r|}{} & \multicolumn{1}{r|}{ 1,051 } & \multicolumn{1}{r|}{ 1,051 } & \multicolumn{1}{r|}{ -   } & \multicolumn{1}{r|}{} & \multicolumn{1}{r|}{ 152 } & \multicolumn{1}{r|}{ (648)} & \multicolumn{1}{r|}{ (800)} \\ 
+\cline{1-1}\cline{3-5}\cline{7-9}
+\end{tabular}\end{center}
+
+
+\subsection{Pitfalls}
+
+No major pitfall was found. The objexct behaves properly, the only thing being these slight differences with non annual swaps and with exactly the same forward rates and discount factors. Results in data/IRSwapValidYann.xls
